@@ -16,7 +16,7 @@ from datetime import timedelta
 from datetime import datetime
 
 #port = int(os.getenv("VCAP_APP_PORT"))
-#port = os.getenv("VCAP_APP_PORT")
+port = os.getenv("VCAP_APP_PORT")
 
 @app.route('/')
 def home():
@@ -84,9 +84,11 @@ def options():
 def location():
    return render_template('Location.html')
 
-
-
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=port)
 
     #app.run(debug=True)
+
+   #app.run(debug=True)
 
     #app.run(host='127.0.0.1', port=port)
