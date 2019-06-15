@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+
+   <body>
+
+   <center>
+      <header> <h1> This page lists the Earthquake records based on Location </h1>
+      </header>
+      <br> <br>
+       <h3>max = {{maxs}}</h3>
+       <h3>min = {{mins}}</h3>
+      <table border=1>
+    <thead>
+    <td>time</td>
+    <td>latitude</td>
+    <td>longitude</td>
+    </thead>
+    <tbody>
+    {% for rows in dist %}
+
+        <tr>
+            <td>{{rows[1]}}</td>
+            <td>{{rows[2]}}</td>
+            <td>{{rows[3]}}</td>
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+      <br>
+      <h2> <a href = "/">Home</a> </h2>
+   </center>
+   </body>
+</html>
