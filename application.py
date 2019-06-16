@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request
 import pyodbc
+import os
 application = app = Flask(__name__)
 
-#port = int(os.getenv("VCAP_APP_PORT"))
+port = int(os.getenv("VCAP_APP_PORT", '5000'))
 #port = os.getenv("VCAP_APP_PORT")
 
 
@@ -25,8 +26,7 @@ def home():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    app.run(host='0.0.0.0', port=port)
 
     #app.run(host='0.0.0.0', port=port)
 
