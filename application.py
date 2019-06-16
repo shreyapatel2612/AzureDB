@@ -20,8 +20,9 @@ cnxn = pyodbc.connect('DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+
 @app.route('/')
 def home():
     cursor = cnxn.cursor()
-    cursor.execute("SELECT * FROM all_months")
+    cursor.execute("SELECT * FROM people")
     row = cursor.fetchall()
+    #return render_template('home.html', data=row)
     return render_template('home.html', data=row)
 
 
