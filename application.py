@@ -1,26 +1,27 @@
-from time import strptime
-from datetime import datetime
 from flask import Flask, render_template, request
-import sqlite3 as sql
-import pandas as pd
+import pyodbc
 application = app = Flask(__name__)
-import os
-import sqlite3
-from math import sin, cos, sqrt, atan2, radians
-import matplotlib as mpl
-mpl.use('Agg')
-from matplotlib import pyplot as plt
-from sklearn.cluster import KMeans
-import datetime
-from datetime import timedelta
-from datetime import datetime
 
 #port = int(os.getenv("VCAP_APP_PORT"))
 #port = os.getenv("VCAP_APP_PORT")
 
+
+
+
+server = 'mysqlserver6429.database.windows.net'
+database = 'MyDB'
+username = 'shreya6429'
+password = 'Myaccount@123'
+driver= '{ODBC Driver 17 for SQL Server}'
+cnxn = pyodbc.connect('DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password)
+
+
 @app.route('/')
 def home():
-   return render_template('home.html')
+    cursor = cnxn.cursor()
+    cursor.execute("SELECT * FROM all_months")
+    row = cursor.fetchall()
+    return render_template('home.html', data=row)
 
 
 if __name__ == '__main__':
