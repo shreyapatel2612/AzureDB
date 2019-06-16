@@ -23,7 +23,7 @@ def home():
     cursor.execute("SELECT * FROM people")
     row = cursor.fetchall()
     #return render_template('home.html', data=row)
-    return render_template('home.html', data=row)
+    return render_template('people.html', data=row)
 
 
 if __name__ == '__main__':
