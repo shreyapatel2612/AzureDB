@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <center>
+      <header> <h1> Displaying Rows and time taken for execution</h1>
+      </header>
+      <br> <br>
+	  <h1>Execution time:{{elapsed_time}}</h1>
+      <table border = 1>
+         {% for row in rows[0] %}
+         <tr>
+        <h1> </h1>
+		<br>
+		<p>{{row}}</p>
+         </tr>
+         {% endfor %}
+      </table>
+
+      <br>
+      <h2> <a href = "/">Home</a> </h2>
+   </center>
+</body>
+</html>
