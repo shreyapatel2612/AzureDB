@@ -1,3 +1,5 @@
+import string
+
 from flask import Flask, render_template, request
 import pyodbc
 import os
@@ -119,10 +121,10 @@ def distance():
         cur.execute("select * from all_months where latitude  = ? and longitude = ?",
                     (request.form['lat1'], request.form['lon1'],))
         get = cur.fetchall();
-        data = cur.fetchall()
         lat_r = radians(float(request.form['lat1']))
         lon_r = radians(float(request.form['lon1']))
-        for row in data:
+        print(len(get))
+        for row in get:
             lat2 = radians(row[2])
             lon2 = radians(row[3])
             dlon = lon2 - lon_r
@@ -133,7 +135,7 @@ def distance():
             if (distance <= (float(request.form['kms']))):
                 dist.append(row)
                 r.set(b, distance)
-            # rows.append(get)
+            #rows.append(get)
 
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -160,38 +162,40 @@ def timerange():
             # cur.execute("select * from all_month WHERE place LIKE ?", ('%'+loc+'%',))
             # get = cur.fetchall();
             r.set(b, str(get))
-    cnxn.close()
     end_time = time.time()
     elapsed_time = end_time - start_time
     return render_template("list1.html", rows=[rows], elapsed_time=elapsed_time)
 
+############ restricted mag range #############
 
 @app.route('/options3', methods=['POST', 'GET'])
 def options3():
     start_time = time.time()
-    mag1 = request.form['mag1']
-    mag2 = (request.form['mag2'])
-    rows = []
     num = int(request.form['num'])
+    mag1 = float(request.form['mag1'])
+    mag2 = float(request.form['mag2'])
+    rows = []
+    c = []
     for i in range(num):
+        val = round(random.uniform(mag1, mag2), 1)
         cur = cnxn.cursor()
-        c = "select * from all_months WHERE mag between " + mag1 + " and " + mag2
-        # cur.execute("select * from all_month WHERE place LIKE ?", ('%'+loc+'%',))
-        if r.get(c):
+        a = 'select * from all_months WHERE mag = ' + str(val)
+        v = str(val)
+        if r.get(a):
             print('Cached')
-            rows.append(r.get(c))
+            c.append('Cached')
         else:
             print('Not Cached')
-            cur.execute("select * from all_months WHERE mag between ? and ?", (mag1, mag2))
-            get = cur.fetchall();
-            rows.append(get)
-            r.set(c, str(get))
+            c.append('Not Cached')
+            cur.execute("select * from all_months WHERE mag = ?", (v,))
+            get = cur.fetchall()
+            r.set(a, str(get))
     end_time = time.time()
     elapsed_time = end_time - start_time
-    return render_template("list1.html", rows=[rows], elapsed_time=elapsed_time)
-
+    return render_template("list1.html", rows=[c], elapsed_time=elapsed_time)
 
 ################# Without Redis ################
+
 @app.route('/quiz36', methods=['POST', 'GET'])
 def quiz36():
     start_time = time.time()
@@ -200,50 +204,48 @@ def quiz36():
     rows = []
     d = []
     for i in range(num):
+        letter = random.choice(string.ascii_lowercase)
+        str = loc + letter
         cur = cnxn.cursor()
-        b = 'select * from all_months WHERE net LIKE ?', (loc + '%',)
-        cur.execute("select * from all_months WHERE net LIKE ?", (loc + '%',))
-        get = cur.fetchall();
+        cur.execute("select * from all_months WHERE net = ?", str )
+        get = cur.fetchall()
         rows.append(get)
-        cur.execute("select * from all_months WHERE net LIKE ?", (loc + '%',))
-        get = cur.fetchall();
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        return render_template("list1.html", rows=[rows], elapsed_time=elapsed_time)
+    end_time = time.time()
+    print(rows)
+    elapsed_time = end_time - start_time
+    return render_template("list1.html", rows=rows, elapsed_time=elapsed_time)
 
 
 ################# With Redis ################
-
-@app.route('/quiz36r', methods=['POST', 'GET'])
+@app.route('/quiz36r' , methods = ['POST', 'GET'])
 def quiz36r():
-    start_time = time.time()
-    num = int(request.form['num'])
-    loc = (request.form['loc'])
-    rows = []
-    d = []
-    for i in range(num):
-        cur = cnxn.cursor()
-        b = 'select * from all_months WHERE net LIKE ?' + loc + '%'
-        if r.get(b):
-            print('Cached')
-            rows.append(r.get(b))
-        else:
-            print('Not Cached')
-            cur.execute("select * from all_months WHERE net LIKE ?", (loc + '%',))
-            get = cur.fetchall();
-            rows.append(get)
-
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        return render_template("list1.html", rows=[rows], elapsed_time=elapsed_time)
-
+   start_time = time.time()
+   num =int(request.form['num'])
+   loc = (request.form['loc'])
+   rows = []
+   d =[]
+   for i in range(num):
+       val = random.choice(string.ascii_lowercase)
+       net = loc + val
+       cur = cnxn.cursor()
+       b = 'select * from all_months WHERE net LIKE ' +str(net)+ '%'
+       cur.execute("select * from all_months WHERE net LIKE ?", (net+'%',))
+       get = cur.fetchall()
+       rows.append(get)
+       if r.get(b):
+           print ('Cached')
+           d.append('Cached')
+       else:
+           print('Not Cached')
+           d.append('Not Cached')
+           r.set(b,str(get))
+   end_time = time.time()
+   elapsed_time = end_time - start_time
+   print (elapsed_time)
+   return render_template("list1.html",rows = rows,elapsed_time=elapsed_time)
 
 if __name__ == '__main__':
     app.run(debug=True)
-    # app.run(host='0.0.0.0', port=port)
 
-    # app.run(host='0.0.0.0', port=port)
-
-# app.run(debug=True)
-
+# app.run(host='0.0.0.0', port=port)
 # app.run(host='127.0.0.1', port=port)

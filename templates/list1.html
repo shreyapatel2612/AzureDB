@@ -11,10 +11,10 @@
     <br> <br>
     <h1>Execution time:{{elapsed_time}}</h1>
     <table border=1>
-        {% for row in rows[0] %}
+        {{rows}}
+        {% for row in rows %}
         <tr>
-            <h1></h1>
-            <br>
+<!--            <br>-->
             <p>{{row}}</p>
         </tr>
         {% endfor %}
