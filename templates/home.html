@@ -1,62 +1,85 @@
 <!doctype html>
 <html>
-	<body>
+<body>
 
-		<center>
-		<header> <h1> Home </h1> </header>
-		<h1> This Webpage consist of Earthquake records</h1>
+<center>
+    <header><h1> Home </h1></header>
+    <h1> This Webpage consist of Earthquake records</h1>
 
-		<h2>Hello shreya</h2> <br>
-        <label><h2>Display the no of records:</h2></label><br>
+    <h2>Hello shreya</h2> <br>
+    <label><h2>Display the no of records:</h2></label><br>
 
-        <form action = "{{ url_for('options') }}" method = "POST">
-		  <label>Enter number:</label>
-          <input type = "text"
-				 name = "num"
-                  />
+    <form action="{{ url_for('options') }}" method="POST">
+        <label>Enter number:</label>
+        <input type="text" name="num"/>
+        <input type="submit" value="submit"/><br>
+    </form>
+    <br>
+    <header><h1>********************* Restricted Queries ************************</h1></header>
 
-		  <input type = "submit" value = "submit" /><br>
-		  </form>
-          <br>
-            ************************************************************************************
-        <header> <h1> Restricted Queries </h1> </header>
+    <h1></h1>
+    <label><h2>Enter the number of queries and :</h2></label><br>
+    <form action="{{ url_for('options2') }}" method="POST">
+        <label>Enter number:</label>
+        <input type="text"
+               name="num"
+        />
+        <label>Enter Location:</label>
+        <input type="text"
+               name="loc"
+        />
+        <input type="submit" value="submit"/><br>
+    </form>
+    <header><h1> ********************** Long, lat, N <100 km ************************ </h1></header>
+    <form action="{{ url_for('distance') }}" method="POST">
+        <label>Enter number:</label>
+        <input type="text" name="num"/>
+        <label>time1:</label>
+        <input type="text" name="lat1"/>
+        <label>time2:</label>
+        <input type="text" name="lon1"/>
+        <input type="submit" value="submit"/><br>
+    </form>
+    <label><h2>Search by time:</h2></label><br>
+    <form action="{{ url_for('timerange') }}" method="POST">
+        <label>Enter number:</label>
+        <input type="text" name="num"/>
+        <label>time1:</label>
+        <input type="text" name="time1"/>
+        <label>time2:</label>
+        <input type="text" name="time2"/>
+        <input type="submit" value="submit"/><br>
+    </form>
 
-		<h1> </h1>
-		<label><h2>Enter the number of queries and :</h2></label><br>
-        <form action = "{{ url_for('options2') }}" method = "POST">
-		<label>Enter number:</label>
-         <input type = "text"
-				 name = "num"
-                  />
-		<label>Enter Location:</label>
-         <input type = "text"
-				 name = "loc"
-                  />
 
-		  <input type = "submit" value = "submit" /><br>
-		  </form>
-        ************************************************************************************
-        <header> <h1> Long, lat, N <100 km </h1> </header>
+    <h1>************************** queries for mag range **************************</h1>
+    <form action="{{ url_for('options3') }}" method="POST">
+        <label>Enter number:</label>
+        <input type="text" name="num"/>
+        <label>mag1:</label>
+        <input type="text" name="mag1"/>
+        <label>mag2:</label>
+        <input type="text" name="mag2"/>
+        <input type="submit" value="submit"/><br>
+    </form>
 
-		<h1> </h1>
-		<label><h2>Enter the number of queries and :</h2></label><br>
+    <h1>************************** quiz 6th question without redis**************************</h1>
+    <form action="{{ url_for('quiz36') }}" method="POST">
+        <label>Enter number:</label>
+        <input type="text" name="num"/>
+        <label>letter:</label>
+        <input type="text" name="loc"/>
+        <input type="submit" value="submit"/><br>
+    </form>
 
-		<label><h2>Search  by Location:</h2></label><br>
-		<form action = "{{ url_for('distance') }}" method = "POST">
-		<label>Latitude:</label>
-          <input type = "text"
-                 name = "lat1"
-                  />
-		  <label>Longitude:</label>
-          <input type = "text"
-                 name = "lon1"
-                 />
-		  <label>Kms:</label>
-          <input type = "text"
-                 name = "kms" />
-
-          <input type = "submit" value = "submit" /><br>
-        </form>
-		</center>
-	</body>
+    <h1>************************** quiz 6th question with redis**************************</h1>
+    <form action="{{ url_for('quiz36r') }}" method="POST">
+        <label>Enter number:</label>
+        <input type="text" name="num"/>
+        <label>letter:</label>
+        <input type="text" name="loc"/>
+        <input type="submit" value="submit"/><br>
+    </form>
+</center>
+</body>
 </html>

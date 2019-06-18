@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-	<table border=1>
+<table border=1>
     <thead>
     <td>Name</td>
     <td>Points</td>
@@ -15,18 +15,18 @@
     </thead>
     <tbody>
     {% for rows in data %}
-		{% if not rows %}
-            <p>No Data is available</p>
-        {% endif %}
-        <tr>
-            <td>{{rows[1]}}</td>
-            <td>{{rows[2]}}</td>
-            <td>{{rows[3]}}</td>
-            <td>{{rows[4]}}</td>
-            <td>{{rows[5]}}</td>
-        </tr>
+    {% if not rows %}
+    <p>No Data is available</p>
+    {% endif %}
+    <tr>
+        <td>{{rows[1]}}</td>
+        <td>{{rows[2]}}</td>
+        <td>{{rows[3]}}</td>
+        <td>{{rows[4]}}</td>
+        <td>{{rows[5]}}</td>
+    </tr>
 
-        {% endfor %}
+    {% endfor %}
     </tbody>
 </table>
 </body>
