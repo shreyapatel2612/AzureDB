@@ -42,6 +42,39 @@ def home():
 #     row = cursor.fetchall()
 # return render_template('home.html', data=row)
 
+# ******** Exam ********8
+
+############ restricted mag range #############
+
+@app.route('/depth5', methods=['POST', 'GET'])
+def depth5():
+    start_time = time.time()
+    depth1 = float(request.form['depth1'])
+    depth2 = float(request.form['depth2'])
+    lon = float(request.form['lon'])
+    rows = []
+    c = []
+    val1 = random.uniform(depth1, depth2)
+    val2 = random.uniform(val1, depth2)
+    cur = cnxn.cursor()
+    a = "select latitude, longitude, time, depth from quake where depth between "+str(val1)+" and "+str(depth2) +" and longitude >"+str(lon)
+    # if r.get(a):
+    #     c.append('Cached')
+    #     rows.append(r.get(a))
+    # else:
+    #     c.append('Not Cached')
+    cur.execute("select latitude, longitude, time, depth from quake where depth between ? and  ? and longitude > ?",
+                (str(val1), str(depth2), str(lon),))
+    get = cur.fetchall()
+    rows.append(get)
+    #r.set(a, str(get))
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(rows)
+    return render_template("list1.html", rows=rows, elapsed_time=elapsed_time)
+
+
+###########Exam #############
 
 @app.route('/options', methods=['POST', 'GET'])
 def options():
@@ -52,7 +85,7 @@ def options():
     for i in range(num):
         val = round(random.uniform(2, 5), 1)
         cur = cnxn.cursor()
-        a = 'select * from all_months WHERE mag = ' + str(val)
+        a = 'select * from quake WHERE mag = ' + str(val)
         v = str(val)
         if r.get(a):
             print('Cached')
@@ -60,7 +93,7 @@ def options():
         else:
             print('Not Cached')
             c.append('Not Cached')
-            cur.execute("select * from all_months WHERE mag = ?", (val,))
+            cur.execute("select * from quake WHERE mag = ?", (val,))
             get = cur.fetchall();
             r.set(a, str(get))
     end_time = time.time()
@@ -76,7 +109,7 @@ def options2():
     rows = []
     for i in range(num):
         cur = cnxn.cursor()
-        b = "select * from all_months WHERE place LIKE ? '%'" + loc + "%"
+        b = "select * from quake WHERE place LIKE ? '%'" + loc + "%"
         # cur.execute("select * from all_months WHERE place LIKE  '"+ ('%' + loc + '%',))
         # get = cur.fetchall();
 
@@ -85,7 +118,7 @@ def options2():
             print('Cached')
         else:
             print('Not Cached')
-            cur.execute("select * from all_months WHERE place LIKE ?", ('%' + loc + '%',))
+            cur.execute("select * from quake WHERE place LIKE ?", ('%' + loc + '%',))
             get = cur.fetchall();
             rows.append(get)
             r.set(b, str(get))
@@ -118,7 +151,7 @@ def distance():
             print("cache")
 
     else:
-        cur.execute("select * from all_months where latitude  = ? and longitude = ?",
+        cur.execute("select * from quake where latitude  = ? and longitude = ?",
                     (request.form['lat1'], request.form['lon1'],))
         get = cur.fetchall();
         lat_r = radians(float(request.form['lat1']))
@@ -135,11 +168,9 @@ def distance():
             if (distance <= (float(request.form['kms']))):
                 dist.append(row)
                 r.set(b, distance)
-            #rows.append(get)
-
     end_time = time.time()
     elapsed_time = end_time - start_time
-    return render_template("list1.html", elapsed_time=elapsed_time, rows=[dist])
+    return render_template("list1.html", elapsed_time=elapsed_time, rows=dist)
 
 
 @app.route('/timerange', methods=['POST', 'GET'])
@@ -151,20 +182,24 @@ def timerange():
     rows = []
     for i in range(num):
         cur = cnxn.cursor()
-        b = "select * from all_months WHERE time BETWEEN %" + time1 + "% and %" + time2 + "%"
-        cur.execute("select * from all_months WHERE time BETWEEN ? and ?", (time1, time2))
+        b = "select * from quake WHERE time BETWEEN %" + time1 + "% and %" + time2 + "%"
+
         get = cur.fetchall()
-        rows.append(get)
+
         if r.get(b):
             print('Cached')
+            rows.append(r.get(b))
         else:
             print('Not Cached')
-            # cur.execute("select * from all_month WHERE place LIKE ?", ('%'+loc+'%',))
-            # get = cur.fetchall();
+            cur.execute("select * from quake WHERE time BETWEEN ? and ?", (time1, time2))
+            get = cur.fetchall();
+            rows.append(get)
             r.set(b, str(get))
     end_time = time.time()
     elapsed_time = end_time - start_time
-    return render_template("list1.html", rows=[rows], elapsed_time=elapsed_time)
+    print(rows)
+    return render_template("list1.html", rows=rows, elapsed_time=elapsed_time)
+
 
 ############ restricted mag range #############
 
@@ -179,20 +214,21 @@ def options3():
     for i in range(num):
         val = round(random.uniform(mag1, mag2), 1)
         cur = cnxn.cursor()
-        a = 'select * from all_months WHERE mag = ' + str(val)
+        a = 'select * from quake WHERE mag = ' + str(val)
         v = str(val)
         if r.get(a):
-            print('Cached')
             c.append('Cached')
+            rows.append(r.get(a))
         else:
-            print('Not Cached')
             c.append('Not Cached')
-            cur.execute("select * from all_months WHERE mag = ?", (v,))
+            cur.execute("select * from quake WHERE mag = ?", (v,))
             get = cur.fetchall()
+            rows.append(get)
             r.set(a, str(get))
     end_time = time.time()
     elapsed_time = end_time - start_time
-    return render_template("list1.html", rows=[c], elapsed_time=elapsed_time)
+    return render_template("list1.html", rows=rows, elapsed_time=elapsed_time)
+
 
 ################# Without Redis ################
 
@@ -207,7 +243,7 @@ def quiz36():
         letter = random.choice(string.ascii_lowercase)
         str = loc + letter
         cur = cnxn.cursor()
-        cur.execute("select * from all_months WHERE net = ?", str )
+        cur.execute("select * from quake WHERE net = ?", str)
         get = cur.fetchall()
         rows.append(get)
     end_time = time.time()
@@ -217,32 +253,32 @@ def quiz36():
 
 
 ################# With Redis ################
-@app.route('/quiz36r' , methods = ['POST', 'GET'])
+@app.route('/quiz36r', methods=['POST', 'GET'])
 def quiz36r():
-   start_time = time.time()
-   num =int(request.form['num'])
-   loc = (request.form['loc'])
-   rows = []
-   d =[]
-   for i in range(num):
-       val = random.choice(string.ascii_lowercase)
-       net = loc + val
-       cur = cnxn.cursor()
-       b = 'select * from all_months WHERE net LIKE ' +str(net)+ '%'
-       cur.execute("select * from all_months WHERE net LIKE ?", (net+'%',))
-       get = cur.fetchall()
-       rows.append(get)
-       if r.get(b):
-           print ('Cached')
-           d.append('Cached')
-       else:
-           print('Not Cached')
-           d.append('Not Cached')
-           r.set(b,str(get))
-   end_time = time.time()
-   elapsed_time = end_time - start_time
-   print (elapsed_time)
-   return render_template("list1.html",rows = rows,elapsed_time=elapsed_time)
+    start_time = time.time()
+    loop = int(request.form['num'])
+    char = request.form['loc']
+    rows = []
+    c = []
+    for i in range(loop):
+        val = random.choice(string.ascii_lowercase)
+        cur = cnxn.cursor()
+        net = char + val
+        a = "select * from quake WHERE net = " + net
+        if r.get(a):
+            c.append('Cached')
+            rows.append(r.get(a))
+        else:
+            # print('Not Cached')
+            c.append('Not Cached')
+            cur.execute("select * from quake WHERE net =?", net)
+            get = cur.fetchall()
+            rows.append(get)
+            r.set(a, str(get))
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    return render_template("list1.html", elapsed_time=elapsed_time, rows=rows)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
