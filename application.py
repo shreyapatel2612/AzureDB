@@ -44,7 +44,7 @@ def home():
 
 # ******** Exam ********8
 
-############ restricted mag range #############
+############ restricted depth 5 range #############
 
 @app.route('/depth5', methods=['POST', 'GET'])
 def depth5():
@@ -73,8 +73,59 @@ def depth5():
     print(rows)
     return render_template("list1.html", rows=rows, elapsed_time=elapsed_time)
 
+############ restricted depth 6 range #############
+@app.route('/depth6', methods=['POST', 'GET'])
+def depth6():
+    start_time = time.time()
+    num = int(request.form['num'])
+    depth1 = float(request.form['depth1'])
+    depth2 = float(request.form['depth2'])
 
-###########Exam #############
+    rows = []
+    c = []
+    for i in range(num):
+        val1 = random.uniform(depth1, depth2)
+        val2 = random.uniform(val1, depth2)
+        cur = cnxn.cursor()
+        a = "select latitude, longitude, time, depth from quake where depth between "+str(val1)+" and "+str(val2)
+
+        cur.execute("select latitude, longitude, time, depth from quake where depth between ? and  ?",
+                    (str(val1), str(val2),))
+        get = cur.fetchall()
+        rows.append(get)
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    return render_template("list1.html", rows=rows, elapsed_time=elapsed_time)
+
+############ restricted depth 8 range #############
+@app.route('/depth8', methods=['POST', 'GET'])
+def depth8():
+    start_time = time.time()
+    num = int(request.form['num'])
+    depth1 = float(request.form['depth1'])
+    depth2 = float(request.form['depth2'])
+
+    rows = []
+    c = []
+    for i in range(num):
+        val1 = random.uniform(depth1, depth2)
+        val2 = random.uniform(val1, depth2)
+        cur = cnxn.cursor()
+        a = "select latitude, longitude, time, depth from quake where depth between "+str(val1)+" and "+str(val2)
+        if r.get(a):
+            c.append('Cached')
+            rows.append(r.get(a))
+        else:
+            c.append('Not Cached')
+            cur.execute("select latitude, longitude, time, depth from quake where depth between ? and  ?",
+                (str(val1), str(val2),))
+            get = cur.fetchall()
+            rows.append(get)
+            r.set(a, str(get))
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    return render_template("list1.html", rows=rows, elapsed_time=elapsed_time)
+###########Exam End #############
 
 @app.route('/options', methods=['POST', 'GET'])
 def options():
