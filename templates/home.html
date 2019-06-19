@@ -9,7 +9,7 @@
 
     <h3>********************* Exam 3 ****************</h3>
 
-<h3>************************** queries for depth range 5th **************************</h3>
+    <h3>************************** queries for depth range 5th **************************</h3>
     <form action="{{ url_for('depth5') }}" method="POST">
 
         <label>depth1:</label>
@@ -20,7 +20,7 @@
         <input type="text" name="lon"/>
         <input type="submit" value="submit"/><br>
     </form>
-<h3>************************** queries for depth range 6th **************************</h3>
+    <h3>************************** queries for depth range 6th **************************</h3>
     <form action="{{ url_for('depth6') }}" method="POST">
         <label>Enter number:</label>
         <input type="text" name="num"/>
@@ -30,7 +30,22 @@
         <input type="text" name="depth2"/>
         <input type="submit" value="submit"/><br>
     </form>
-
+    <h3>************************** queries for depth range 7th **************************</h3>
+    <form action="{{ url_for('depth7') }}" method="POST">
+        <label>Enter number:</label>
+        <input type="text" name="num"/>
+        <label>depth1:</label>
+        <input type="text" name="depth1"/>
+        <label>depth2:</label>
+        <input type="text" name="depth2"/>
+        <select name="opt">
+            <option value="im">in memory</option>
+            <option value="n">none</option>
+            <option value="all">all</option>
+            <input type="submit" value="submit"/>
+        </select>
+        <br>
+    </form>
     <h3>************************** queries for depth range 8th **************************</h3>
     <form action="{{ url_for('depth8') }}" method="POST">
         <label>Enter number:</label>
@@ -41,6 +56,8 @@
         <input type="text" name="depth2"/>
         <input type="submit" value="submit"/><br>
     </form>
+
+
     #####################################
     <form action="{{ url_for('options') }}" method="POST">
         <label>Enter number:</label>
